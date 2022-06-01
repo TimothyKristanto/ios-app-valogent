@@ -16,8 +16,6 @@
 		BF1800982836822300C6FCCE /* ProfileCareerCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1800972836822300C6FCCE /* ProfileCareerCardView.swift */; };
 		BF18009C2838794200C6FCCE /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18009B2838794200C6FCCE /* ModelData.swift */; };
 		BF18009E28387A4F00C6FCCE /* AgentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18009D28387A4F00C6FCCE /* AgentData.swift */; };
-		BF1FD87A283A70E1007ED618 /* IndexCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1FD879283A70E1007ED618 /* IndexCollection.swift */; };
-		BF91B15D283A4FB0002223B1 /* FavoriteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91B15C283A4FB0002223B1 /* FavoriteButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,8 +29,6 @@
 		BF1800972836822300C6FCCE /* ProfileCareerCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCareerCardView.swift; sourceTree = "<group>"; };
 		BF18009B2838794200C6FCCE /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		BF18009D28387A4F00C6FCCE /* AgentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentData.swift; sourceTree = "<group>"; };
-		BF1FD879283A70E1007ED618 /* IndexCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexCollection.swift; sourceTree = "<group>"; };
-		BF91B15C283A4FB0002223B1 /* FavoriteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +61,6 @@
 		BF1800732836160300C6FCCE /* Valogent */ = {
 			isa = PBXGroup;
 			children = (
-				BF91B15B283A4F9A002223B1 /* Helpers */,
 				BF18009A28373A7900C6FCCE /* Models */,
 				BF180084283636D200C6FCCE /* Views */,
 				BF1800742836160300C6FCCE /* ValogentApp.swift */,
@@ -117,15 +112,6 @@
 				BF18009D28387A4F00C6FCCE /* AgentData.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		BF91B15B283A4F9A002223B1 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				BF91B15C283A4FB0002223B1 /* FavoriteButton.swift */,
-				BF1FD879283A70E1007ED618 /* IndexCollection.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,10 +187,8 @@
 				BF18009E28387A4F00C6FCCE /* AgentData.swift in Sources */,
 				BF1800772836160300C6FCCE /* ContentView.swift in Sources */,
 				BF18009528365F0800C6FCCE /* HomeView.swift in Sources */,
-				BF91B15D283A4FB0002223B1 /* FavoriteButton.swift in Sources */,
 				BF1800832836305B00C6FCCE /* ProfileView.swift in Sources */,
 				BF1800982836822300C6FCCE /* ProfileCareerCardView.swift in Sources */,
-				BF1FD87A283A70E1007ED618 /* IndexCollection.swift in Sources */,
 				BF1800752836160300C6FCCE /* ValogentApp.swift in Sources */,
 				BF18009C2838794200C6FCCE /* ModelData.swift in Sources */,
 			);
