@@ -15,6 +15,8 @@ struct HomeView: View {
     @State private var searchText = ""
     @State private var filter = "All"
     @State private var showFavorite = false
+    @State private var favoritedAgents = [String]()
+    @State private var showSheet: Bool = false
     
     @EnvironmentObject var modelData: ModelData
 //
@@ -31,14 +33,32 @@ struct HomeView: View {
     }
     
     var filteredResults: [Agent]{
+        var agentList = [Agent]()
+        
+        if showFavorite {
+            agentList = searchResults.filter{
+                favoritedAgents.contains($0.displayName)
+            }
+        }else{
+            agentList = searchResults
+        }
+        
         if filter == "All"{
-            return searchResults.filter{
+            agentList = agentList.filter{
                 $0.isPlayableCharacter == true
+            }
+        }else{
+            agentList = agentList.filter{
+                $0.role?.displayName.rawValue ?? "Unknown" == filter
             }
         }
         
-        return searchResults.filter{
-            $0.role?.displayName.rawValue ?? "Unknown" == filter
+        return agentList
+    }
+    
+    func removeFavoriteAgent(agent: Agent){
+        favoritedAgents = favoritedAgents.filter{
+            $0 != agent.displayName
         }
     }
     
@@ -60,7 +80,7 @@ struct HomeView: View {
                         HStack{
                             ForEach(trendingNows, id: \.self){ trendingNow in
                                 ProfileCareerCardView(status: trendingNow)
-                                    .frame(height: 230)
+                                    .frame(height: 180)
                                     .padding(.leading, 3)
                             }
                         }
@@ -80,7 +100,6 @@ struct HomeView: View {
 
                         Spacer()
                     }
-                    
                     
                     HStack{
                         TextField("Search", text: $searchText)
@@ -113,7 +132,7 @@ struct HomeView: View {
                                 .scaledToFit()
                                 .offset(x: 0)
                                 .foregroundStyle(.blue)
-                                .frame(height: 30, alignment: .leading)
+                                .frame(height: 28, alignment: .leading)
                                 .padding(.trailing, 20)
                         }
                         
@@ -125,13 +144,13 @@ struct HomeView: View {
                 .offset(x: 20, y: -5)
                 
                 ScrollView{
-                    ForEach($modelData.agents, id: \.uuid) { $agent in
+                    ForEach(filteredResults, id: \.uuid) { agent in
                         NavigationLink{
                             // Todo: change to detail page
                             
                             ZStack{
                                 LinearGradient(gradient: Gradient(colors: [.red, .black]), startPoint: .top, endPoint: .bottom)
-                                
+
                                 HStack{
                                     GeometryReader { geo in
                                         AsyncImage(url: URL(string: agent.fullPortraitV2 ?? "")) { image in
@@ -143,56 +162,176 @@ struct HomeView: View {
                                         } placeholder: {
                                             Color.red
                                         }
-                                            
+
                                     }
                                 }
-                                
+
                                 VStack{
-                                    
+
                                     Spacer()
-                                    
+
                                     HStack{
                                         AsyncImage(url: URL(string: agent.role?.displayIcon ?? "Unknown")) { image in
                                             image
                                                 .resizable()
                                                 .scaledToFit()
-                                                .frame(height: 45)
+                                                .frame(height: 38)
                                         } placeholder: {
                                             Color.red
                                         }
-                                        .padding(.trailing, 5)
-                                        
+
                                         Text(agent.displayName)
                                             .font(.largeTitle)
                                             .bold()
                                             .foregroundStyle(.white)
-                                        
+
                                         Button {
-                                            agent.isFavorite.toggle()
+                                            favoritedAgents.contains(agent.displayName) ? removeFavoriteAgent(agent: agent) : favoritedAgents.append(agent.displayName)
                                         } label: {
-                                            Image(systemName: agent.isFavorite ? "star.fill" : "star")
+                                            Image(systemName: favoritedAgents.contains(agent.displayName) ? "star.fill" : "star")
                                                 .resizable()
                                                 .scaledToFit()
                                                 .foregroundColor(.white)
                                                 .frame(height: 25)
-                                                .padding(.leading, 5)
                                         }
-                                        
-//                                        FavoriteButton(isSet: $modelData.agents[modelData.agents.firstIndex(where: { $0.uuid == agent.uuid })!].isFavorite)
-                                        
+                                        .padding(.leading, 5)
+
                                     }
                                     
-                                    Image(systemName: "chevron.up")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .foregroundStyle(.white)
-                                        .frame(height: 25)
-                                    
-                                    Text("Swipe up")
-                                        .bold()
-                                        .foregroundStyle(.white)
-                                        .padding(.bottom, 50)
+                                    Button{
+                                        showSheet.toggle()
+                                    } label: {
+                                        Text("More Details")
+                                            .foregroundStyle(.black)
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .padding(.bottom, 130)
+                                    .halfSheet(showSheet: $showSheet){
+                                        ZStack{
+                                            LinearGradient(gradient: Gradient(colors: [.black, .red]), startPoint: .top, endPoint: .bottom)
+                                            
+                                            VStack{
+                                                Image(systemName: "chevron.compact.down")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .foregroundStyle(.white)
+                                                    .frame(height: 20)
+                                                    .padding(.top, 30)
+                                                
+                                                ScrollView{
+                                                    VStack{
+                                                        HStack{
+                                                            Text("Description")
+                                                                .font(.title)
+                                                                .bold()
+                                                                .foregroundStyle(.white)
+                                                            
+                                                            Spacer()
+                                                        }
+                                                        .padding(.leading, 20)
+                                                        
+                                                        Text(agent.description)
+                                                            .multilineTextAlignment(.center)
+                                                            .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                                                            .offset(y: 10)
+                                                            .foregroundStyle(.white)
+                                                        
+                                                        HStack{
+                                                            Text("Role")
+                                                                .font(.title)
+                                                                .bold()
+                                                                .foregroundStyle(.white)
+                                                            
+                                                            Spacer()
+                                                        }
+                                                        .padding(EdgeInsets(top: 15, leading: 20, bottom: 0, trailing: 0))
+                                                        
+                                                        HStack{
+                                                            AsyncImage(url: URL(string: agent.role?.displayIcon ?? "Unknown")) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .scaledToFit()
+                                                                    .frame(height: 40)
+                                                            } placeholder: {
+                                                                Color.red
+                                                            }
+                                                            
+                                                            Text(agent.role?.displayName.rawValue ?? "Unknown")
+//                                                                .bold()
+                                                                .font(.title2)
+                                                                .foregroundStyle(.white)
+                                                                .padding(.leading, 3)
+                                                            
+                                                            Spacer()
+                                                        }
+                                                        .padding(.leading, 40)
+                                                        
+                                                        HStack{
+                                                            Text("Abilities")
+                                                                .font(.title)
+                                                                .bold()
+                                                                .foregroundStyle(.white)
+                                                            
+                                                            Spacer()
+                                                        }
+                                                        .padding(EdgeInsets(top: 15, leading: 20, bottom: 0, trailing: 0))
+                                                        
+                                                        ForEach(agent.abilities, id: \.slot){ ability in
+                                                            
+                                                            HStack{
+                                                                VStack{
+                                                                    AsyncImage(url: URL(string: ability.displayIcon ?? "Unknown")) { image in
+                                                                        image
+                                                                            .resizable()
+                                                                            .scaledToFit()
+                                                                            .frame(height: 55)
+                                                                    } placeholder: {
+                                                                        Color.red
+                                                                    }
+                                                                    
+                                                                    Spacer()
+                                                                }
+                                                                
+                                                                VStack{
+                                                                    
+                                                                    HStack {
+                                                                        Text(ability.displayName)
+                                                                            .bold()
+                                                                            .font(.title2)
+                                                                            .foregroundStyle(.white)
+                                                                            .padding(.leading, 3)
+                                                                        .multilineTextAlignment(.leading)
+                                                                        
+                                                                        Spacer()
+                                                                    }
+                                                                    
+                                                                    Text(ability.abilityDescription)
+                                                                        .foregroundStyle(.white)
+                                                                        .padding(.leading, 3)
+                                                                        .offset(y: 5)
+                                                                }
+                                                                
+                                                                Spacer()
+                                                                
+                                                            }
+                                                            .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 0))
+                                                            
+                                                        }
+                                                        .padding(.top, 5)
+                                                        
+                                                    }
+                                                    .padding(.bottom, 10)
+                                                }
+                                                
+                                                Spacer()
+                                            }
+                                            
+                                        }
+                                        .ignoresSafeArea()
                                         
+                                        
+                                    }
+
                                 }
                             }
                             .ignoresSafeArea()
@@ -222,19 +361,18 @@ struct HomeView: View {
                                 } placeholder: {
                                     Color.red
                                 }
-                                .frame(width: 25, height: 25)
+                                .frame(height: 25)
                                 .clipShape(RoundedRectangle(cornerRadius: 25))
                                 
                                 Text(agent.role?.displayName.rawValue ?? "Unknown")
-                                    .font(.headline)
+                                    .font(.subheadline)
                                     .bold()
                                     .foregroundStyle(.white)
-                                    .padding(.trailing, 15)
+                                    .padding(.trailing, 5)
                                 
-                                Image(systemName: agent.isFavorite ? "star.fill" : "star")
+                                Image(systemName: favoritedAgents.contains(agent.displayName) ? "star.fill" : "star")
                                     .imageScale(.large)
                                     .foregroundColor(.white)
-                                
                                 
                                 Image(systemName: "chevron.right")
                                     .foregroundStyle(.white)
@@ -250,14 +388,14 @@ struct HomeView: View {
                         
                     }
                 }
-                .onAppear(){
-                    modelData.fetchData()
-                }
                 .padding(10)
                 .shadow(radius: 5)
                 
                 Spacer()
                 
+            }
+            .onAppear(){
+                modelData.fetchData()
             }
             .navigationBarTitle("Agent")
             .navigationBarHidden(true)
@@ -274,5 +412,40 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(modelData)
+    }
+}
+
+extension View{
+    func halfSheet<SheetView: View>(showSheet: Binding<Bool>, @ViewBuilder sheetView: @escaping ()->SheetView)-> some View{
+        
+        return self
+            .background(
+                HalfSheetHelper(sheetView: sheetView(), showSheet: showSheet)
+            )
+    }
+}
+
+struct HalfSheetHelper<SheetView: View>: UIViewControllerRepresentable{
+    var sheetView: SheetView
+    @Binding var showSheet: Bool
+    
+    let controller = UIViewController()
+    
+    func makeUIViewController(context: Context) -> some UIViewController {
+        controller.view.backgroundColor = .clear
+        
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        if showSheet{
+            let sheetController = UIHostingController(rootView: sheetView)
+            
+            uiViewController.present(sheetController, animated: true) {
+                DispatchQueue.main.async {
+                    self.showSheet.toggle()
+                }
+            }
+        }
     }
 }

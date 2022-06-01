@@ -25,7 +25,6 @@ struct Agent: Codable {
     var role: Role?
     var abilities: [Ability]
     var voiceLine: VoiceLine
-    var isFavorite: Bool = false
 
     enum CodingKeys: String, CodingKey {
         case uuid, displayName

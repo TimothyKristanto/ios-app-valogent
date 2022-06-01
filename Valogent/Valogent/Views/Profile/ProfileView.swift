@@ -12,7 +12,7 @@ struct ProfileView: View {
     
     var body: some View {
         ScrollView{
-            ZStack{
+//            ZStack{
                 VStack{
                     Image("valorantLogo")
                         .resizable()
@@ -74,7 +74,7 @@ struct ProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 40, height: 40)
-                            Text("Platinum I")
+                            Text("Platinum III")
                         }
                         
                         Divider()
@@ -123,9 +123,9 @@ struct ProfileView: View {
                     
                     
                 }
-                .offset(y: 130)
+                .offset(y: -70)
                 
-            }
+//            }
             
         }
         .ignoresSafeArea(edges: .top)
